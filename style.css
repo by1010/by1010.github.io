@@ -38,6 +38,8 @@ h2 {
 
 body.newpage {
     background-image:url("national-pink-day-3840x2160-12348.png.pdf");
+    background-position: center;
+    transform: rotate(90deg);
 }
         
         
