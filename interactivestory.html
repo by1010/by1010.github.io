@@ -1,11 +1,8 @@
-# Interactive Haunted Doggy Mansion (HTML)
-
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Mochi's Haunted Mansion</title>
 
 <style>
@@ -13,8 +10,8 @@
 body{
     margin:0;
     overflow:hidden;
+    background:#000;
     font-family:Arial, sans-serif;
-    background:#111;
     color:white;
 }
 
@@ -22,108 +19,192 @@ body{
     width:100vw;
     height:100vh;
     position:relative;
-    background:#000;
+    overflow:hidden;
 }
 
-.room{
-    width:100%;
-    height:100%;
+/* ================= ROOM ================= */
+
+#room{
     position:absolute;
     inset:0;
     background-size:cover;
     background-position:center;
+    transition:0.5s;
+    animation:flicker 5s infinite;
 }
 
-#ui{
+/* LIGHT FLICKER */
+
+@keyframes flicker{
+
+    0%{ filter:brightness(1); }
+    5%{ filter:brightness(0.7); }
+    7%{ filter:brightness(1.1); }
+    10%{ filter:brightness(0.6); }
+    11%{ filter:brightness(1); }
+    55%{ filter:brightness(1); }
+    56%{ filter:brightness(0.5); }
+    58%{ filter:brightness(1); }
+    100%{ filter:brightness(1); }
+
+}
+
+/* ================= GHOSTS ================= */
+
+.ghost{
+
     position:absolute;
-    bottom:0;
-    width:100%;
-    background:rgba(0,0,0,0.82);
-    padding:18px;
-    box-sizing:border-box;
-    border-top:3px solid #b983ff;
+    width:120px;
+    opacity:0.7;
+    pointer-events:none;
+    animation:floatGhost 7s ease-in-out infinite;
+
 }
 
-#topBar{
-    display:flex;
-    gap:25px;
-    margin-bottom:10px;
-    color:#f5d0fe;
-    font-size:18px;
-    flex-wrap:wrap;
+@keyframes floatGhost{
+
+    0%{
+        transform:translateY(0px) translateX(0px);
+    }
+
+    50%{
+        transform:translateY(-20px) translateX(15px);
+    }
+
+    100%{
+        transform:translateY(0px) translateX(0px);
+    }
+
 }
 
-#text{
-    min-height:70px;
-    line-height:1.5;
-    font-size:18px;
-}
-
-#buttons{
-    margin-top:12px;
-}
-
-button{
-    background:#a855f7;
-    border:none;
-    color:white;
-    padding:10px 15px;
-    border-radius:12px;
-    cursor:pointer;
-    margin:6px;
-    transition:0.2s;
-    font-size:15px;
-}
-
-button:hover{
-    transform:scale(1.05);
-    background:#c084fc;
-}
-
-.hotspot{
-    position:absolute;
-    border:2px dashed rgba(255,255,255,0.4);
-    cursor:pointer;
-    transition:0.2s;
-}
-
-.hotspot:hover{
-    background:rgba(255,255,255,0.15);
-}
+/* ================= DOG ================= */
 
 #dog{
+
     position:absolute;
-    width:110px;
+    width:120px;
     bottom:170px;
     left:120px;
+    z-index:10;
     transition:0.5s;
+
+}
+
+/* ================= HOTSPOTS ================= */
+
+.hotspot{
+
+    position:absolute;
+    border:2px dashed rgba(255,255,255,0.15);
+    cursor:pointer;
+    transition:0.2s;
     z-index:5;
 }
 
+.hotspot:hover{
+
+    background:rgba(255,255,255,0.2);
+    border:2px solid rgba(255,255,255,0.7);
+
+}
+
+/* ================= TOOLTIP ================= */
+
+#tooltip{
+
+    position:absolute;
+    display:none;
+    padding:10px 12px;
+    background:rgba(0,0,0,0.85);
+    border:2px solid #c084fc;
+    border-radius:12px;
+    color:#f5d0fe;
+    z-index:50;
+    pointer-events:none;
+    font-size:15px;
+    font-weight:bold;
+
+}
+
+/* ================= UI ================= */
+
+#ui{
+
+    position:absolute;
+    bottom:0;
+    width:100%;
+    background:rgba(0,0,0,0.86);
+    border-top:3px solid #b983ff;
+    padding:18px;
+    box-sizing:border-box;
+    z-index:20;
+
+}
+
+#topBar{
+
+    display:flex;
+    gap:20px;
+    flex-wrap:wrap;
+    color:#f5d0fe;
+    margin-bottom:10px;
+    font-size:18px;
+
+}
+
+#text{
+
+    min-height:70px;
+    line-height:1.6;
+    font-size:18px;
+
+}
+
+button{
+
+    background:#a855f7;
+    border:none;
+    color:white;
+    padding:12px 18px;
+    border-radius:12px;
+    margin-top:10px;
+    cursor:pointer;
+    font-size:16px;
+    transition:0.2s;
+
+}
+
+button:hover{
+
+    background:#c084fc;
+    transform:scale(1.05);
+
+}
+
+/* ================= ENDING ================= */
+
 #endingScreen{
+
     position:absolute;
     inset:0;
-    background:rgba(0,0,0,0.92);
+    background:rgba(0,0,0,0.94);
     display:none;
     justify-content:center;
     align-items:center;
     text-align:center;
+    z-index:100;
     padding:30px;
     box-sizing:border-box;
-    z-index:20;
+
 }
 
 #endingBox{
+
     max-width:800px;
-}
-
-h1{
+    line-height:1.8;
+    font-size:24px;
     color:#fde68a;
-}
 
-.small{
-    color:#ddd;
-    font-size:14px;
 }
 
 </style>
@@ -133,17 +214,42 @@ h1{
 
 <div id="game">
 
-    <div id="room" class="room"></div>
+    <div id="room"></div>
 
-    <img id="dog" src="https://cdn-icons-png.flaticon.com/512/616/616408.png">
+    <!-- FLOATING GHOSTS -->
+
+    <img class="ghost" id="ghost1"
+    src="https://cdn-icons-png.flaticon.com/512/3094/3094835.png"
+    style="top:12%; left:8%; animation-duration:6s;">
+
+    <img class="ghost" id="ghost2"
+    src="https://cdn-icons-png.flaticon.com/512/3094/3094835.png"
+    style="top:25%; right:10%; width:90px; animation-duration:9s;">
+
+    <img class="ghost" id="ghost3"
+    src="https://cdn-icons-png.flaticon.com/512/3094/3094835.png"
+    style="bottom:30%; left:70%; width:100px; animation-duration:8s;">
+
+    <!-- DOG -->
+
+    <img id="dog"
+    src="https://cdn-icons-png.flaticon.com/512/616/616408.png">
+
+    <!-- TOOLTIP -->
+
+    <div id="tooltip"></div>
+
+    <!-- UI -->
 
     <div id="ui">
 
         <div id="topBar">
+
             <div id="day"></div>
             <div id="energy"></div>
             <div id="inventory"></div>
             <div id="location"></div>
+
         </div>
 
         <div id="text"></div>
@@ -152,353 +258,443 @@ h1{
 
     </div>
 
+    <!-- ENDINGS -->
+
     <div id="endingScreen">
+
         <div id="endingBox"></div>
+
     </div>
 
 </div>
 
 <script>
 
+/* ================= GAME STATE ================= */
+
 let day = 1;
 let energy = 3;
+
 let inventory = [];
+
 let currentRoom = "foyer";
+
 let secret = [];
 
+/* ================= ELEMENTS ================= */
+
 const roomEl = document.getElementById("room");
-const textEl = document.getElementById("text");
-const buttonsEl = document.getElementById("buttons");
+
 const dog = document.getElementById("dog");
+
+const tooltip = document.getElementById("tooltip");
+
+const textEl = document.getElementById("text");
+
+const buttonsEl = document.getElementById("buttons");
+
 const endingScreen = document.getElementById("endingScreen");
+
 const endingBox = document.getElementById("endingBox");
+
+/* ================= ROOMS ================= */
 
 const rooms = {
 
-foyer:{
-    name:"Foyer",
-    bg:"https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=1200&auto=format&fit=crop",
-    text:"Mochi stands in the haunted foyer. The chandelier flickers ominously. A portrait appears to be judging you.",
-    hotspots:[
+    foyer:{
 
-        {
-            x:"8%",
-            y:"35%",
-            w:"18%",
-            h:"35%",
-            label:"Go to Kitchen 🍲",
-            action:()=>moveRoom("kitchen",80)
-        },
+        name:"Foyer",
 
-        {
-            x:"72%",
-            y:"25%",
-            w:"20%",
-            h:"45%",
-            label:"Go Upstairs 🪜",
-            action:()=>moveRoom("upstairs",620)
-        },
+        bg:"https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=1200&auto=format&fit=crop",
 
-        {
-            x:"42%",
-            y:"18%",
-            w:"16%",
-            h:"38%",
-            label:"Bark at Portrait 🖼",
-            action:()=>{
+        text:"Mochi stands in the haunted foyer. The chandelier flickers ominously.",
 
-                addSecret("bark");
+        hotspots:[
 
-                spendEnergy();
+            {
+                x:"8%",
+                y:"40%",
+                w:"18%",
+                h:"35%",
+                label:"🍲 Go to Kitchen",
+                action:()=>moveRoom("kitchen",90)
+            },
 
-                setText("Mochi barks at the haunted portrait. The portrait sighs dramatically. 'wow okay rude.'");
-            }
-        }
-    ]
-},
+            {
+                x:"72%",
+                y:"22%",
+                w:"20%",
+                h:"48%",
+                label:"🪜 Go Upstairs",
+                action:()=>moveRoom("upstairs",650)
+            },
 
-kitchen:{
-    name:"Kitchen",
-    bg:"https://images.unsplash.com/photo-1484154218962-a197022b5858?q=80&w=1200&auto=format&fit=crop",
-    text:"Floating soup pots drift through the kitchen. Something in the fridge is breathing.",
-    hotspots:[
+            {
+                x:"42%",
+                y:"18%",
+                w:"15%",
+                h:"35%",
+                label:"🖼 Bark at Portrait",
+                action:()=>{
 
-        {
-            x:"70%",
-            y:"30%",
-            w:"16%",
-            h:"35%",
-            label:"Open Cabinet 🦴",
-            action:()=>{
+                    addSecret("bark");
 
-                spendEnergy();
+                    doAction(
+                        "Mochi barks loudly. The haunted portrait sighs dramatically. 'wow okay rude.'"
+                    );
 
-                if(!inventory.includes("Ghost Bone")){
-
-                    inventory.push("Ghost Bone");
-
-                    setText("Mochi discovers the 🦴 Ghost Bone hidden behind haunted soup cans. The soup applauds politely.");
                 }
-                else{
-                    setText("Just more soup. So much soup.");
+            }
+
+        ]
+
+    },
+
+    kitchen:{
+
+        name:"Kitchen",
+
+        bg:"https://images.unsplash.com/photo-1484154218962-a197022b5858?q=80&w=1200&auto=format&fit=crop",
+
+        text:"Floating soup pots drift through the air. Something in the fridge is breathing.",
+
+        hotspots:[
+
+            {
+                x:"70%",
+                y:"28%",
+                w:"18%",
+                h:"38%",
+                label:"🦴 Open Cabinet",
+                action:()=>{
+
+                    if(!inventory.includes("Ghost Bone")){
+
+                        inventory.push("Ghost Bone");
+
+                        doAction(
+                            "Mochi discovers the 🦴 Ghost Bone hidden behind haunted soup cans. The soup applauds politely."
+                        );
+
+                    }
+
+                    else{
+
+                        doAction(
+                            "Mochi checks the cabinet again. Still just soup."
+                        );
+
+                    }
+
                 }
+            },
 
-                updateUI();
-            }
-        },
+            {
+                x:"40%",
+                y:"45%",
+                w:"15%",
+                h:"18%",
+                label:"🧀 Steal Cursed Cheese",
+                action:()=>{
 
-        {
-            x:"5%",
-            y:"35%",
-            w:"15%",
-            h:"30%",
-            label:"Return to Foyer",
-            action:()=>moveRoom("foyer",120)
-        },
+                    doAction(
+                        "The cursed cheese screams. Mochi screams back."
+                    );
 
-        {
-            x:"40%",
-            y:"45%",
-            w:"15%",
-            h:"20%",
-            label:"Steal Cheese 🧀",
-            action:()=>{
-
-                spendEnergy();
-
-                setText("The cursed cheese screams. Mochi screams back.");
-            }
-        }
-    ]
-},
-
-upstairs:{
-    name:"Upstairs Hall",
-    bg:"https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=1200&auto=format&fit=crop",
-    text:"A ghost vacuum cleaner patrols the hallway aggressively.",
-    hotspots:[
-
-        {
-            x:"75%",
-            y:"30%",
-            w:"15%",
-            h:"45%",
-            label:"Enter Library 📚",
-            action:()=>moveRoom("library",650)
-        },
-
-        {
-            x:"10%",
-            y:"35%",
-            w:"18%",
-            h:"40%",
-            label:"Go Back Down",
-            action:()=>moveRoom("foyer",120)
-        },
-
-        {
-            x:"45%",
-            y:"45%",
-            w:"18%",
-            h:"18%",
-            label:"Fight Vacuum ⚔",
-            action:()=>{
-
-                spendEnergy();
-
-                setText("Mochi loses immediately. The vacuum steals a sock and leaves triumphantly.");
-            }
-        }
-    ]
-},
-
-library:{
-    name:"Library",
-    bg:"https://images.unsplash.com/photo-1507842217343-583bb7270b66?q=80&w=1200&auto=format&fit=crop",
-    text:"Books float through the air like angry pigeons.",
-    hotspots:[
-
-        {
-            x:"65%",
-            y:"20%",
-            w:"18%",
-            h:"55%",
-            label:"Inspect Shelf 🔑",
-            action:()=>{
-
-                spendEnergy();
-
-                if(!inventory.includes("Rusty Key")){
-
-                    inventory.push("Rusty Key");
-
-                    setText("Behind the shelf is the 🔑 Rusty Key. A dictionary bonks Mochi approvingly.");
                 }
-                else{
-                    setText("The shelf only contains terrifying tax documents from 1892.");
+            },
+
+            {
+                x:"5%",
+                y:"40%",
+                w:"15%",
+                h:"30%",
+                label:"⬅ Return to Foyer",
+                action:()=>moveRoom("foyer",120)
+            }
+
+        ]
+
+    },
+
+    upstairs:{
+
+        name:"Upstairs Hall",
+
+        bg:"https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=1200&auto=format&fit=crop",
+
+        text:"A ghost vacuum cleaner patrols the hallway aggressively.",
+
+        hotspots:[
+
+            {
+                x:"74%",
+                y:"28%",
+                w:"15%",
+                h:"42%",
+                label:"📚 Enter Library",
+                action:()=>moveRoom("library",680)
+            },
+
+            {
+                x:"10%",
+                y:"40%",
+                w:"15%",
+                h:"35%",
+                label:"⬇ Go Downstairs",
+                action:()=>moveRoom("foyer",120)
+            },
+
+            {
+                x:"42%",
+                y:"42%",
+                w:"18%",
+                h:"18%",
+                label:"⚔ Fight Vacuum",
+                action:()=>{
+
+                    doAction(
+                        "Mochi loses instantly. The vacuum steals a sock and leaves triumphantly."
+                    );
+
                 }
-
-                updateUI();
             }
-        },
 
-        {
-            x:"10%",
-            y:"40%",
-            w:"15%",
-            h:"30%",
-            label:"Return Hallway",
-            action:()=>moveRoom("upstairs",100)
-        },
+        ]
 
-        {
-            x:"35%",
-            y:"50%",
-            w:"18%",
-            h:"15%",
-            label:"Do Zoomies 💨",
-            action:()=>{
+    },
 
-                addSecret("zoomies");
+    library:{
 
-                spendEnergy();
+        name:"Library",
 
-                setText("Mochi performs incredible high-speed zoomies. The ghosts clap politely.");
-            }
-        },
+        bg:"https://images.unsplash.com/photo-1507842217343-583bb7270b66?q=80&w=1200&auto=format&fit=crop",
 
-        {
-            x:"85%",
-            y:"40%",
-            w:"10%",
-            h:"25%",
-            label:"Basement Door 🚪",
-            action:()=>moveRoom("basement",720)
-        }
-    ]
-},
+        text:"Books float through the air like angry pigeons.",
 
-basement:{
-    name:"Basement",
-    bg:"https://images.unsplash.com/photo-1513694203232-719a280e022f?q=80&w=1200&auto=format&fit=crop",
-    text:"The basement is freezing cold. Shadows twitch along the walls.",
-    hotspots:[
+        hotspots:[
 
-        {
-            x:"45%",
-            y:"28%",
-            w:"12%",
-            h:"30%",
-            label:"Take Candle 🕯",
-            action:()=>{
+            {
+                x:"65%",
+                y:"20%",
+                w:"18%",
+                h:"55%",
+                label:"🔑 Inspect Bookshelf",
+                action:()=>{
 
-                spendEnergy();
+                    if(!inventory.includes("Rusty Key")){
 
-                if(!inventory.includes("Haunted Candle")){
+                        inventory.push("Rusty Key");
 
-                    inventory.push("Haunted Candle");
+                        doAction(
+                            "Behind the shelf is the 🔑 Rusty Key. A dictionary bonks Mochi approvingly."
+                        );
 
-                    setText("Mochi grabs the 🕯 Haunted Candle. The mansion groans loudly.");
+                    }
+
+                    else{
+
+                        doAction(
+                            "The bookshelf only contains horrifying tax documents from 1892."
+                        );
+
+                    }
+
                 }
-                else{
-                    setText("The darkness stares back at Mochi respectfully.");
+            },
+
+            {
+                x:"35%",
+                y:"50%",
+                w:"18%",
+                h:"15%",
+                label:"💨 Do Zoomies",
+                action:()=>{
+
+                    addSecret("zoomies");
+
+                    doAction(
+                        "Mochi performs incredible high-speed zoomies. The ghosts clap politely."
+                    );
+
                 }
+            },
 
-                updateUI();
+            {
+                x:"84%",
+                y:"40%",
+                w:"10%",
+                h:"25%",
+                label:"🚪 Enter Basement",
+                action:()=>moveRoom("basement",720)
+            },
+
+            {
+                x:"10%",
+                y:"40%",
+                w:"15%",
+                h:"30%",
+                label:"⬅ Return Upstairs",
+                action:()=>moveRoom("upstairs",100)
             }
-        },
 
-        {
-            x:"20%",
-            y:"60%",
-            w:"18%",
-            h:"15%",
-            label:"Dig Floorboards 🐾",
-            action:()=>{
+        ]
 
-                addSecret("dig");
+    },
 
-                spendEnergy();
+    basement:{
 
-                setText("Mochi uncovers ancient dog treats from 1881.");
+        name:"Basement",
+
+        bg:"https://images.unsplash.com/photo-1513694203232-719a280e022f?q=80&w=1200&auto=format&fit=crop",
+
+        text:"The basement is freezing cold. Shadows twitch along the walls.",
+
+        hotspots:[
+
+            {
+                x:"45%",
+                y:"28%",
+                w:"12%",
+                h:"30%",
+                label:"🕯 Take Candle",
+                action:()=>{
+
+                    if(!inventory.includes("Haunted Candle")){
+
+                        inventory.push("Haunted Candle");
+
+                        doAction(
+                            "Mochi grabs the 🕯 Haunted Candle. The mansion groans loudly."
+                        );
+
+                    }
+
+                    else{
+
+                        doAction(
+                            "The darkness stares at Mochi respectfully."
+                        );
+
+                    }
+
+                }
+            },
+
+            {
+                x:"18%",
+                y:"60%",
+                w:"18%",
+                h:"16%",
+                label:"🐾 Dig Floorboards",
+                action:()=>{
+
+                    addSecret("dig");
+
+                    doAction(
+                        "Mochi uncovers ancient dog treats from 1881."
+                    );
+
+                }
+            },
+
+            {
+                x:"5%",
+                y:"40%",
+                w:"15%",
+                h:"30%",
+                label:"⬅ Return Library",
+                action:()=>moveRoom("library",100)
             }
-        },
 
-        {
-            x:"5%",
-            y:"35%",
-            w:"15%",
-            h:"35%",
-            label:"Return Library",
-            action:()=>moveRoom("library",100)
-        }
-    ]
-}
+        ]
+
+    }
 
 };
 
+/* ================= UPDATE UI ================= */
+
 function updateUI(){
 
-    document.getElementById("day").innerHTML = `🌙 Day ${day}/3`;
-    document.getElementById("energy").innerHTML = `⚡ Energy: ${energy}`;
-    document.getElementById("inventory").innerHTML = `🧸 ${inventory.join(", ") || "No Items"}`;
-    document.getElementById("location").innerHTML = `📍 ${rooms[currentRoom].name}`;
+    document.getElementById("day").innerHTML =
+    `🌙 Day ${day}/3`;
+
+    document.getElementById("energy").innerHTML =
+    `⚡ Energy: ${energy}`;
+
+    document.getElementById("inventory").innerHTML =
+    `🧸 ${inventory.join(", ") || "No Items"}`;
+
+    document.getElementById("location").innerHTML =
+    `📍 ${rooms[currentRoom].name}`;
+
 }
 
-function setText(t){
-    textEl.innerHTML = t;
-}
+/* ================= ENERGY ================= */
 
-function clearHotspots(){
+function spendEnergy(){
 
-    document.querySelectorAll(".hotspot").forEach(e=>e.remove());
-}
+    if(energy <= 0) return false;
 
-function loadRoom(){
+    energy--;
+
+    if(energy < 0){
+
+        energy = 0;
+
+    }
 
     updateUI();
 
+    if(energy === 0){
+
+        lockDay();
+
+    }
+
+    return true;
+
+}
+
+/* ================= ACTION ================= */
+
+function doAction(text){
+
+    if(energy <= 0) return;
+
+    spendEnergy();
+
+    textEl.innerHTML = text;
+
+    updateUI();
+
+}
+
+/* ================= LOCK DAY ================= */
+
+function lockDay(){
+
     clearHotspots();
-
-    const room = rooms[currentRoom];
-
-    roomEl.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.55)), url('${room.bg}')`;
-
-    setText(room.text);
-
-    room.hotspots.forEach(h=>{
-
-        const div = document.createElement("div");
-
-        div.className = "hotspot";
-
-        div.style.left = h.x;
-        div.style.top = h.y;
-        div.style.width = h.w;
-        div.style.height = h.h;
-
-        div.title = h.label;
-
-        div.onclick = h.action;
-
-        roomEl.appendChild(div);
-    });
 
     buttonsEl.innerHTML = "";
 
-    if(energy <= 0){
+    const sleepBtn = document.createElement("button");
 
-        const btn = document.createElement("button");
+    sleepBtn.innerText = "💤 Sleep Until Next Day";
 
-        btn.innerText = "Sleep Until Next Day 💤";
+    sleepBtn.onclick = nextDay;
 
-        btn.onclick = nextDay;
+    buttonsEl.appendChild(sleepBtn);
 
-        buttonsEl.appendChild(btn);
-    }
+    textEl.innerHTML =
+    "Mochi is too eepy to continue exploring today.";
+
 }
 
-function moveRoom(room, x){
+/* ================= MOVE ROOMS ================= */
+
+function moveRoom(room,x){
 
     if(energy <= 0) return;
 
@@ -509,19 +705,84 @@ function moveRoom(room, x){
     dog.style.left = x + "px";
 
     loadRoom();
+
 }
 
-function spendEnergy(){
+/* ================= CLEAR HOTSPOTS ================= */
 
-    energy--;
+function clearHotspots(){
+
+    document.querySelectorAll(".hotspot")
+    .forEach(h=>h.remove());
+
+}
+
+/* ================= LOAD ROOM ================= */
+
+function loadRoom(){
 
     updateUI();
 
+    clearHotspots();
+
+    roomEl.style.backgroundImage =
+    `linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.6)), url('${rooms[currentRoom].bg}')`;
+
+    textEl.innerHTML = rooms[currentRoom].text;
+
+    buttonsEl.innerHTML = "";
+
     if(energy <= 0){
 
-        setText("Mochi is too eepy to continue exploring today.");
+        lockDay();
+
+        return;
+
     }
+
+    rooms[currentRoom].hotspots.forEach(h=>{
+
+        const div = document.createElement("div");
+
+        div.className = "hotspot";
+
+        div.style.left = h.x;
+        div.style.top = h.y;
+        div.style.width = h.w;
+        div.style.height = h.h;
+
+        div.onmouseenter = (e)=>{
+
+            tooltip.style.display = "block";
+
+            tooltip.innerHTML =
+            `${h.label}<br><span style="font-size:12px;color:#ddd;">click to interact</span>`;
+
+        };
+
+        div.onmousemove = (e)=>{
+
+            tooltip.style.left = e.pageX + 12 + "px";
+
+            tooltip.style.top = e.pageY + 12 + "px";
+
+        };
+
+        div.onmouseleave = ()=>{
+
+            tooltip.style.display = "none";
+
+        };
+
+        div.onclick = h.action;
+
+        roomEl.appendChild(div);
+
+    });
+
 }
+
+/* ================= NEXT DAY ================= */
 
 function nextDay(){
 
@@ -534,19 +795,23 @@ function nextDay(){
         ending();
 
         return;
+
     }
 
-    setText("Morning somehow arrives despite the mansion violating several laws of reality.");
-
     loadRoom();
+
 }
+
+/* ================= SECRET ENDING ================= */
 
 function addSecret(word){
 
     secret.push(word);
 
     if(secret.length > 3){
+
         secret.shift();
+
     }
 
     if(
@@ -554,9 +819,14 @@ function addSecret(word){
         secret[1] === "zoomies" &&
         secret[2] === "dig"
     ){
+
         secretEnding();
+
     }
+
 }
+
+/* ================= NORMAL ENDING ================= */
 
 function ending(){
 
@@ -565,38 +835,63 @@ function ending(){
     if(inventory.length === 3){
 
         endingBox.innerHTML = `
-        <h1>⭐ TRUE ENDING ⭐</h1>
 
-        Mochi collected all 3 relics.<br><br>
+        ⭐ TRUE ENDING ⭐
+        <br><br>
 
-        The curse shatters apart.<br><br>
+        Mochi collected all 3 relics.
+        <br><br>
 
-        The mansion screams as sunlight floods the halls.<br><br>
+        The curse shatters apart.
+        <br><br>
 
-        Mochi escapes into freedom carrying the haunted candle proudly in his mouth. 🐶<br><br>
+        The mansion screams as sunlight floods the halls.
+        <br><br>
 
-        <button onclick="location.reload()">Play Again</button>
+        Mochi escapes into freedom carrying the haunted candle proudly in his mouth. 🐶
+        <br><br>
+
+        <button onclick="location.reload()">
+        Play Again
+        </button>
+
         `;
+
     }
+
     else{
 
         endingBox.innerHTML = `
-        <h1>👑 BAD ENDING 👑</h1>
 
-        Mochi failed to gather every relic.<br><br>
+        👑 BAD ENDING 👑
+        <br><br>
 
-        The ghosts crown him the new ruler of the mansion forever.<br><br>
+        Mochi failed to gather every relic.
+        <br><br>
 
-        He becomes:<br><br>
+        The ghosts crown him the new ruler forever.
+        <br><br>
 
-        <b>THE DREAD LORD OF BARKNESS</b><br><br>
+        He becomes:
+        <br><br>
 
-        honestly he seems pretty happy about it<br><br>
+        <b>THE DREAD LORD OF BARKNESS</b>
+        <br><br>
 
-        <button onclick="location.reload()">Play Again</button>
+        honestly he seems very happy about it
+        <br><br>
+
+        <button onclick="location.reload()">
+        Play Again
+        </button>
+
         `;
+
     }
+
 }
+
+/* ================= SECRET ENDING ================= */
 
 function secretEnding(){
 
@@ -604,23 +899,39 @@ function secretEnding(){
 
     endingBox.innerHTML = `
 
-    <h1>💥 SECRET ENDING 💥</h1>
+    💥 SECRET ENDING 💥
+    <br><br>
 
-    The forbidden sequence is complete.<br><br>
+    The forbidden sequence is complete.
+    <br><br>
 
-    Reality begins buffering.<br><br>
+    Reality begins buffering.
+    <br><br>
 
-    Mochi slowly turns toward YOU.<br><br>
+    Mochi slowly turns toward YOU.
+    <br><br>
 
-    "wait... im trapped inside html?"<br><br>
+    "wait... im trapped inside html?"
+    <br><br>
 
-    The universe collapses into corrupted png files and squeaky toy noises.<br><br>
+    A ghost opens Notepad.
+    <br><br>
 
-    EVERYTHING EXPLODES.<br><br>
+    The universe collapses into corrupted png files and squeaky toy noises.
+    <br><br>
 
-    <button onclick="location.reload()">Reboot Reality</button>
+    EVERYTHING EXPLODES.
+    <br><br>
+
+    <button onclick="location.reload()">
+    Reboot Reality
+    </button>
+
     `;
+
 }
+
+/* ================= START GAME ================= */
 
 loadRoom();
 
