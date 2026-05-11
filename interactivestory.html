@@ -33,7 +33,7 @@ body{
     animation:flicker 5s infinite;
 }
 
-/* LIGHT FLICKER */
+/* ================= LIGHT FLICKER ================= */
 
 @keyframes flicker{
 
@@ -181,7 +181,7 @@ button:hover{
 
 }
 
-/* ================= ENDING ================= */
+/* ================= ENDINGS ================= */
 
 #endingScreen{
 
@@ -218,15 +218,15 @@ button:hover{
 
     <!-- FLOATING GHOSTS -->
 
-    <img class="ghost" id="ghost1"
+    <img class="ghost"
     src="https://cdn-icons-png.flaticon.com/512/3094/3094835.png"
     style="top:12%; left:8%; animation-duration:6s;">
 
-    <img class="ghost" id="ghost2"
+    <img class="ghost"
     src="https://cdn-icons-png.flaticon.com/512/3094/3094835.png"
     style="top:25%; right:10%; width:90px; animation-duration:9s;">
 
-    <img class="ghost" id="ghost3"
+    <img class="ghost"
     src="https://cdn-icons-png.flaticon.com/512/3094/3094835.png"
     style="bottom:30%; left:70%; width:100px; animation-duration:8s;">
 
@@ -258,7 +258,7 @@ button:hover{
 
     </div>
 
-    <!-- ENDINGS -->
+    <!-- ENDING SCREEN -->
 
     <div id="endingScreen">
 
@@ -317,6 +317,7 @@ const rooms = {
                 w:"18%",
                 h:"35%",
                 label:"🍲 Go to Kitchen",
+                type:"move",
                 action:()=>moveRoom("kitchen",90)
             },
 
@@ -326,6 +327,7 @@ const rooms = {
                 w:"20%",
                 h:"48%",
                 label:"🪜 Go Upstairs",
+                type:"move",
                 action:()=>moveRoom("upstairs",650)
             },
 
@@ -334,7 +336,8 @@ const rooms = {
                 y:"18%",
                 w:"15%",
                 h:"35%",
-                label:"🖼 Bark at Portrait",
+                label:"🖼 Bark at Portrait (-1 Energy)",
+                type:"action",
                 action:()=>{
 
                     addSecret("bark");
@@ -365,7 +368,8 @@ const rooms = {
                 y:"28%",
                 w:"18%",
                 h:"38%",
-                label:"🦴 Open Cabinet",
+                label:"🦴 Open Cabinet (-1 Energy)",
+                type:"action",
                 action:()=>{
 
                     if(!inventory.includes("Ghost Bone")){
@@ -394,7 +398,8 @@ const rooms = {
                 y:"45%",
                 w:"15%",
                 h:"18%",
-                label:"🧀 Steal Cursed Cheese",
+                label:"🧀 Steal Cursed Cheese (-1 Energy)",
+                type:"action",
                 action:()=>{
 
                     doAction(
@@ -410,6 +415,7 @@ const rooms = {
                 w:"15%",
                 h:"30%",
                 label:"⬅ Return to Foyer",
+                type:"move",
                 action:()=>moveRoom("foyer",120)
             }
 
@@ -433,6 +439,7 @@ const rooms = {
                 w:"15%",
                 h:"42%",
                 label:"📚 Enter Library",
+                type:"move",
                 action:()=>moveRoom("library",680)
             },
 
@@ -442,6 +449,7 @@ const rooms = {
                 w:"15%",
                 h:"35%",
                 label:"⬇ Go Downstairs",
+                type:"move",
                 action:()=>moveRoom("foyer",120)
             },
 
@@ -450,7 +458,8 @@ const rooms = {
                 y:"42%",
                 w:"18%",
                 h:"18%",
-                label:"⚔ Fight Vacuum",
+                label:"⚔ Fight Vacuum (-1 Energy)",
+                type:"action",
                 action:()=>{
 
                     doAction(
@@ -479,7 +488,8 @@ const rooms = {
                 y:"20%",
                 w:"18%",
                 h:"55%",
-                label:"🔑 Inspect Bookshelf",
+                label:"🔑 Inspect Bookshelf (-1 Energy)",
+                type:"action",
                 action:()=>{
 
                     if(!inventory.includes("Rusty Key")){
@@ -508,7 +518,8 @@ const rooms = {
                 y:"50%",
                 w:"18%",
                 h:"15%",
-                label:"💨 Do Zoomies",
+                label:"💨 Do Zoomies (-1 Energy)",
+                type:"action",
                 action:()=>{
 
                     addSecret("zoomies");
@@ -526,6 +537,7 @@ const rooms = {
                 w:"10%",
                 h:"25%",
                 label:"🚪 Enter Basement",
+                type:"move",
                 action:()=>moveRoom("basement",720)
             },
 
@@ -535,6 +547,7 @@ const rooms = {
                 w:"15%",
                 h:"30%",
                 label:"⬅ Return Upstairs",
+                type:"move",
                 action:()=>moveRoom("upstairs",100)
             }
 
@@ -557,7 +570,8 @@ const rooms = {
                 y:"28%",
                 w:"12%",
                 h:"30%",
-                label:"🕯 Take Candle",
+                label:"🕯 Take Candle (-1 Energy)",
+                type:"action",
                 action:()=>{
 
                     if(!inventory.includes("Haunted Candle")){
@@ -586,7 +600,8 @@ const rooms = {
                 y:"60%",
                 w:"18%",
                 h:"16%",
-                label:"🐾 Dig Floorboards",
+                label:"🐾 Dig Floorboards (-1 Energy)",
+                type:"action",
                 action:()=>{
 
                     addSecret("dig");
@@ -604,6 +619,7 @@ const rooms = {
                 w:"15%",
                 h:"30%",
                 label:"⬅ Return Library",
+                type:"move",
                 action:()=>moveRoom("library",100)
             }
 
@@ -692,13 +708,9 @@ function lockDay(){
 
 }
 
-/* ================= MOVE ROOMS ================= */
+/* ================= MOVEMENT ================= */
 
 function moveRoom(room,x){
-
-    if(energy <= 0) return;
-
-    spendEnergy();
 
     currentRoom = room;
 
@@ -774,7 +786,17 @@ function loadRoom(){
 
         };
 
-        div.onclick = h.action;
+        div.onclick = ()=>{
+
+            if(h.type === "action" && energy <= 0){
+
+                return;
+
+            }
+
+            h.action();
+
+        };
 
         roomEl.appendChild(div);
 
@@ -802,7 +824,7 @@ function nextDay(){
 
 }
 
-/* ================= SECRET ENDING ================= */
+/* ================= SECRET ================= */
 
 function addSecret(word){
 
@@ -912,9 +934,6 @@ function secretEnding(){
     <br><br>
 
     "wait... im trapped inside html?"
-    <br><br>
-
-    A ghost opens Notepad.
     <br><br>
 
     The universe collapses into corrupted png files and squeaky toy noises.
