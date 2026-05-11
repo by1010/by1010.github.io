@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mochi's Haunted House</title>
+
+<style>
+
+body{
+    margin:0;
+    font-family: "Trebuchet MS", sans-serif;
+    background:#111;
+    overflow:hidden;
+    color:white;
+}
+
+#game{
+    width:100vw;
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    background:
+    linear-gradient(rgba(0,0,0,0.75), rgba(0,0,0,0.85)),
+    url("https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=1200&auto=format&fit=crop");
+
+    background-size:cover;
+    background-position:center;
+}
+
+.panel{
+    width:750px;
+    max-width:92%;
+    background:rgba(25,25,25,0.92);
+    border:3px solid #b794f4;
+    border-radius:24px;
+    padding:28px;
+    box-shadow:0 0 30px #9f7aea;
+}
+
+h1{
+    margin-top:0;
+    text-align:center;
+    color:#f5d0fe;
+}
+
+#stats{
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:18px;
+    color:#ddd6fe;
+    font-size:18px;
+}
+
+#story{
+    min-height:220px;
+    line-height:1.7;
+    font-size:18px;
+}
+
+button{
+    background:#9f7aea;
+    border:none;
+    color:white;
+    padding:12px 18px;
+    margin:8px;
+    border-radius:14px;
+    cursor:pointer;
+    font-size:15px;
+    transition:0.2s;
+}
+
+button:hover{
+    background:#c4b5fd;
+    transform:scale(1.05);
+}
+
+#choices{
+    margin-top:15px;
+}
+
+#inventory{
+    margin-top:18px;
+    color:#d8b4fe;
+}
+
+.ending{
+    text-align:center;
+    font-size:22px;
+    line-height:1.8;
+    color:#fde68a;
+}
+
+.small{
+    font-size:15px;
+    color:#d4d4d4;
+}
+
+</style>
+</head>
+
+<body>
+
+<div id="game">
+    <div class="panel">
+
+        <h1>🐶 Mochi's Haunted House</h1>
+
+        <div id="stats">
+            <div id="day"></div>
+            <div id="energy"></div>
+            <div id="items"></div>
+        </div>
+
+        <div id="story"></div>
+
+        <div id="choices"></div>
+
+        <div id="inventory"></div>
+
+    </div>
+</div>
+
+<script>
+
+let day = 1;
+let energy = 3;
+
+let items = [];
+
+let secretOrder = [];
+
+const story = document.getElementById("story");
+const choices = document.getElementById("choices");
+
+function updateStats(){
+
+    document.getElementById("day").innerHTML =
+    `🌙 Day ${day} / 3`;
+
+    document.getElementById("energy").innerHTML =
+    `⚡ Energy: ${energy}`;
+
+    document.getElementById("items").innerHTML =
+    `🧸 Items: ${items.length}/3`;
+
+    document.getElementById("inventory").innerHTML =
+    `Inventory: ${items.length ? items.join(", ") : "absolutely nothing"}`;
+}
+
+function clearChoices(){
+    choices.innerHTML = "";
+}
+
+function addChoice(text, func){
+
+    const btn = document.createElement("button");
+
+    btn.innerText = text;
+
+    btn.onclick = func;
+
+    choices.appendChild(btn);
+}
+
+function spendEnergy(){
+
+    energy--;
+
+    updateStats();
+
+    if(energy <= 0){
+
+        clearChoices();
+
+        addChoice("Go to sleep 💤", nextDay);
+    }
+}
+
+function getItem(item){
+
+    if(!items.includes(item)){
+        items.push(item);
+    }
+
+    updateStats();
+}
+
+function secret(action){
+
+    secretOrder.push(action);
+
+    if(secretOrder.length > 3){
+        secretOrder.shift();
+    }
+
+    if(
+        secretOrder[0] === "bark" &&
+        secretOrder[1] === "zoomies" &&
+        secretOrder[2] === "dig"
+    ){
+        universeEnding();
+    }
+
+}
+
+function nextDay(){
+
+    day++;
+    energy = 3;
+
+    if(day > 3){
+
+        ending();
+
+        return;
+    }
+
+    startDay();
+}
+
+function startGame(){
+
+    updateStats();
+
+    story.innerHTML = `
+    Mr. Mochi has become trapped inside a haunted mansion during a thunderstorm. 🌧<br><br>
+
+    Every night, the mansion changes shape.<br><br>
+
+    Find these 3 cursed relics before Day 3 ends:
+    <br><br>
+
+    🦴 Ghost Bone<br>
+    🔑 Rusty Key<br>
+    🕯 Haunted Candle
+    <br><br>
+
+    If Mochi fails... well, you'll find out.
+    <br><br>
+
+    <div class="small">
+    You only have 3 energy each day!
+    </div>
+    `;
+
+    clearChoices();
+
+    addChoice("Enter the mansion 🐾", startDay);
+}
+
+function startDay(){
+
+    updateStats();
+
+    clearChoices();
+
+    if(day === 1){
+
+        story.innerHTML = `
+        <b>DAY 1 🌧</b><br><br>
+
+        Mochi steps into the mansion.<br><br>
+
+        The chandelier swings even though there is no wind.<br><br>
+
+        A ghost cat loafs aggressively at the end of the hallway.
+        `;
+
+        addChoice("Sniff the kitchen 🍲", ()=>{
+
+            story.innerHTML = `
+            Mochi discovers a haunted soup pot bubbling by itself.<br><br>
+
+            Inside a cabinet is the 🦴 Ghost Bone!<br><br>
+
+            The soup continues to gurgle obnoxiously.
+            `;
+
+            getItem("Ghost Bone");
+
+            spendEnergy();
+        });
+
+        addChoice("Bark at the ghost cat 🐈", ()=>{
+
+            secret("bark");
+
+            story.innerHTML = `
+            Mochi barks bravely.<br><br>
+
+            The ghost cat slowly blinks.<br><br>
+
+            It evaporates dramatically.
+            `;
+
+            spendEnergy();
+        });
+
+        addChoice("Roll down the hallway 🌀", ()=>{
+
+            story.innerHTML = `
+            Mochi accidentally rolls into a grandfather clock.<br><br>
+
+            The clock now says "dog o'clock."
+            `;
+
+            spendEnergy();
+        });
+
+        addChoice("Investigate weird noises upstairs 👀", ()=>{
+
+            story.innerHTML = `
+            A possessed vacuum cleaner chases Mochi down the stairs.<br><br>
+
+            Humiliating.
+            `;
+
+            spendEnergy();
+        });
+
+        addChoice("Steal ghost toast 🍞", ()=>{
+
+            story.innerHTML = `
+            The toast was cursed.<br><br>
+
+            Mochi briefly hears colors.
+            `;
+
+            spendEnergy();
+        });
+
+    }
+
+    else if(day === 2){
+
+        story.innerHTML = `
+        <b>DAY 2 ⚡</b><br><br>
+
+        The mansion seems more alive today.<br><br>
+
+        The wallpaper now whispers gossip about you.
+        `;
+
+        addChoice("Search the library 📚", ()=>{
+
+            story.innerHTML = `
+            A floating encyclopedia bonks Mochi on the head.<br><br>
+
+            Behind a bookshelf is the 🔑 Rusty Key!
+            `;
+
+            getItem("Rusty Key");
+
+            spendEnergy();
+        });
+
+        addChoice("Do zoomies through the hallway 💨", ()=>{
+
+            secret("zoomies");
+
+            story.innerHTML = `
+            Mochi runs at MACH SPEED.<br><br>
+
+            Several ghosts howl approvingly as you drift around corners.
+            `;
+            
+            spendEnergy();
+        });
+
+        addChoice("Nap on cursed couch 🛋", ()=>{
+
+            story.innerHTML = `
+            Mochi wakes up tucked into a tiny blanket.<br><br>
+
+            The ghosts respectfully allowed nap time.
+            `;
+
+            spendEnergy();
+        });
+
+        addChoice("Chase floating eyeball 👁", ()=>{
+
+            story.innerHTML = `
+            The eyeball begins to talk about it's past life.<br><br>
+
+            This mansion has issues.
+            `;
+
+            spendEnergy();
+        });
+
+        addChoice("Open suspicious fridge ❄", ()=>{
+
+            story.innerHTML = `
+            There is only a single slice of cheese inside.<br><br>
+
+            Mochi whines sadly.
+            `;
+
+            spendEnergy();
+        });
+
+    }
+
+    else if(day === 3){
+
+        story.innerHTML = `
+        <b>DAY 3 🌕</b><br><br>
+
+        The mansion groans loudly.<br><br>
+
+        Portraits are now barking back at Mochi.<br><br>
+
+        One final relic remains hidden...
+        `;
+
+        addChoice("Open basement door 🚪", ()=>{
+
+            story.innerHTML = `
+            Deep underground, Mochi discovers the 🕯 Haunted Candle glowing softly.<br><br>
+
+            The shadows hiss dramatically as you take it.
+            `;
+
+            getItem("Haunted Candle");
+
+            spendEnergy();
+        });
+
+        addChoice("Dig at spooky floorboards 🐾", ()=>{
+
+            secret("dig");
+
+            story.innerHTML = `
+            Mochi digs with incredible determination.<br><br>
+
+            You uncover ancient dog treats from 1873.<br><br>
+
+            Still crunchy.
+            `;
+
+            spendEnergy();
+        });
+
+        addChoice("Eat mysterious carpet 🧶", ()=>{
+
+            story.innerHTML = `
+            The carpet tastes like sadness.
+            `;
+
+            spendEnergy();
+        });
+
+        addChoice("Challenge ghost to staring contest 👻", ()=>{
+
+            story.innerHTML = `
+            Mochi loses immediately because he gets distracted by his tail.
+            `;
+
+            spendEnergy();
+        });
+
+        addChoice("Wear tiny cursed crown 👑", ()=>{
+
+            story.innerHTML = `
+            For 5 seconds, Mochi becomes legally recognized as king of ghosts.
+            `;
+
+            spendEnergy();
+        });
+
+    }
+
+}
+
+function ending(){
+
+    clearChoices();
+
+    if(items.length === 3){
+
+        story.innerHTML = `
+        <div class="ending">
+
+        ⭐ TRUE ENDING ⭐<br><br>
+
+        The 3 relics glow brightly.<br><br>
+
+        The mansion shakes violently as its curse breaks apart.<br><br>
+
+        The front door bursts open.<br><br>
+
+        Mochi escapes into the sunrise carrying the haunted candle proudly in his mouth. 🐶<br><br>
+
+        </div>
+        `;
+    }
+
+    else{
+
+        story.innerHTML = `
+        <div class="ending">
+
+        👑 BAD ENDING 👑<br><br>
+
+        Mochi failed to collect all 3 relics.<br><br>
+
+        The mansion accepts him as its new ruler.<br><br>
+
+        Tiny ghost servants place a fluffy cursed cape around his shoulders.<br><br>
+
+        Mochi now reigns eternally as:
+        <br><br>
+
+        <b>THE DREAD LORD OF BARKNESS</b>
+        <br><br>
+
+        honestly he seems pretty happy about it
+
+        </div>
+        `;
+    }
+
+    addChoice("Play Again 🔄", restart);
+
+}
+
+function universeEnding(){
+
+    clearChoices();
+
+    story.innerHTML = `
+    <div class="ending">
+
+   💥 SECRET ENDING 💥<br><br>
+
+    The forbidden sequence has been completed.<br><br>
+
+    The walls unzip themselves.<br><br>
+
+    The moon crashes into the living room.<br><br>
+
+    Mochi stares directly at YOU.<br><br>
+
+    "why are you controlling me with javascript"<br><br>
+
+    Reality collapses into blue error messages and squeaky toy sounds.<br><br>
+
+    THE UNIVERSE EXPLODES.
+    </div>
+    `;
+
+    addChoice("Reboot Reality 🔁", restart);
+
+}
+
+function restart(){
+
+    day = 1;
+    energy = 3;
+    items = [];
+    secretOrder = [];
+
+    startGame();
+}
+
+startGame();
+
+</script>
+
+</body>
+</html>
