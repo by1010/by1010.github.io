@@ -8,7 +8,6 @@
 <style>
 
 body{
-
     margin:0;
     background:#050505;
     overflow:hidden;
@@ -18,13 +17,11 @@ body{
     align-items:center;
     height:100vh;
     color:white;
-
 }
 
 /* ================= GAME BORDER ================= */
 
 #gameBorder{
-
     width:1280px;
     height:720px;
     border:6px solid #8b5cf6;
@@ -32,32 +29,27 @@ body{
     transition:0.3s;
     box-shadow:0 0 30px #6d28d9;
     background:black;
-
+    overflow:hidden;
 }
 
 #gameBorder:hover{
-
     border-color:#f472b6;
     box-shadow:0 0 40px #f472b6;
-
 }
 
 /* ================= GAME ================= */
 
 #game{
-
     width:100%;
     height:100%;
     position:relative;
     overflow:hidden;
     image-rendering:pixelated;
-
 }
 
 /* ================= ROOM ================= */
 
 #room{
-
     position:absolute;
     inset:0;
     background-size:cover;
@@ -65,13 +57,11 @@ body{
     transition:1s;
     animation:flicker 5s infinite;
     filter:contrast(1.1) saturate(0.7);
-
 }
 
-/* ================= ROOM TRANSITION ================= */
+/* ================= TRANSITION ================= */
 
 #fade{
-
     position:absolute;
     inset:0;
     background:black;
@@ -79,13 +69,11 @@ body{
     pointer-events:none;
     transition:0.6s;
     z-index:90;
-
 }
 
 /* ================= RETRO FILTER ================= */
 
 #scanlines{
-
     position:absolute;
     inset:0;
     background:
@@ -96,16 +84,13 @@ body{
         transparent 2px,
         transparent 4px
     );
-
     pointer-events:none;
     z-index:80;
-
 }
 
 /* ================= FLICKER ================= */
 
 @keyframes flicker{
-
     0%{filter:brightness(1);}
     3%{filter:brightness(0.7);}
     6%{filter:brightness(1);}
@@ -113,87 +98,68 @@ body{
     41%{filter:brightness(0.6);}
     43%{filter:brightness(1);}
     100%{filter:brightness(1);}
-
 }
 
 /* ================= GHOSTS ================= */
 
 .ghost{
-
     position:absolute;
     width:100px;
     opacity:0.65;
     animation:floatGhost 6s ease-in-out infinite;
     pointer-events:none;
-
 }
 
 @keyframes floatGhost{
-
-    0%{
-        transform:translateY(0px);
-    }
-
-    50%{
-        transform:translateY(-25px) translateX(10px);
-    }
-
-    100%{
-        transform:translateY(0px);
-    }
-
+    0%{transform:translateY(0px);}
+    50%{transform:translateY(-25px) translateX(10px);}
+    100%{transform:translateY(0px);}
 }
 
 /* ================= DOG ================= */
 
 #dog{
-
     position:absolute;
     width:120px;
     bottom:150px;
     left:120px;
     z-index:10;
     transition:0.7s;
-
 }
 
 /* ================= HOTSPOTS ================= */
 
 .hotspot{
-
     position:absolute;
     border:2px dashed rgba(255,255,255,0.15);
     transition:0.2s;
     cursor:pointer;
-
 }
 
 .hotspot:hover{
-
     background:rgba(255,255,255,0.2);
     border-color:#f472b6;
-
 }
 
 /* ================= TOOLTIP ================= */
 
 #tooltip{
-
     position:absolute;
     display:none;
-    background:rgba(0,0,0,0.9);
+    background:rgba(0,0,0,0.92);
     border:2px solid #f472b6;
     padding:10px;
-    z-index:100;
+    z-index:999;
     pointer-events:none;
     font-size:14px;
-
+    max-width:240px;
+    line-height:1.5;
+    box-sizing:border-box;
 }
 
 /* ================= UI ================= */
 
 #ui{
-
     position:absolute;
     bottom:0;
     width:100%;
@@ -202,29 +168,23 @@ body{
     padding:16px;
     box-sizing:border-box;
     z-index:50;
-
 }
 
 #topBar{
-
     display:flex;
     gap:20px;
     margin-bottom:12px;
     flex-wrap:wrap;
     color:#f5d0fe;
-
 }
 
 #text{
-
     min-height:80px;
     line-height:1.6;
     font-size:18px;
-
 }
 
 button{
-
     background:#7c3aed;
     border:none;
     color:white;
@@ -233,19 +193,15 @@ button{
     cursor:pointer;
     font-family:inherit;
     transition:0.2s;
-
 }
 
 button:hover{
-
     background:#f472b6;
-
 }
 
-/* ================= ENDING SCREEN ================= */
+/* ================= ENDING ================= */
 
 #endingScreen{
-
     position:absolute;
     inset:0;
     background:black;
@@ -256,16 +212,13 @@ button:hover{
     text-align:center;
     padding:40px;
     box-sizing:border-box;
-
 }
 
 #endingText{
-
     max-width:800px;
     line-height:1.8;
     font-size:24px;
     color:#fde68a;
-
 }
 
 </style>
@@ -349,47 +302,30 @@ continue
 /* ================= STATE ================= */
 
 let day = 1;
-
 let energy = 3;
-
 let inventory = [];
-
 let currentRoom = "foyer";
-
-let secret = [];
-
 let outsideClicks = 0;
-
 let foundItemToday = false;
 
 /* ================= ELEMENTS ================= */
 
 const roomEl = document.getElementById("room");
-
 const tooltip = document.getElementById("tooltip");
-
 const dog = document.getElementById("dog");
-
 const fade = document.getElementById("fade");
-
 const textEl = document.getElementById("text");
-
 const buttonsEl = document.getElementById("buttons");
-
 const endingScreen = document.getElementById("endingScreen");
-
 const endingText = document.getElementById("endingText");
-
 const nextEndingBtn = document.getElementById("nextEndingBtn");
+const gameBorder = document.getElementById("gameBorder");
 
 /* ================= OUTSIDE CLICK SECRET ================= */
 
 document.body.addEventListener("click",(e)=>{
 
-    const border =
-    document.getElementById("gameBorder");
-
-    if(!border.contains(e.target)){
+    if(!gameBorder.contains(e.target)){
 
         outsideClicks++;
 
@@ -438,9 +374,9 @@ action:()=>moveRoom("upstairs",650)
 },
 
 {
-x:"42%",
+x:"44%",
 y:"18%",
-w:"15%",
+w:"14%",
 h:"35%",
 label:"🖼 Bark Portrait (-1 Energy)",
 type:"action",
@@ -452,6 +388,16 @@ doAction(
 
 }
 
+},
+
+{
+x:"46%",
+y:"70%",
+w:"14%",
+h:"18%",
+label:"🏠 Sleep in Dog House",
+type:"sleep",
+action:()=>sleep()
 }
 
 ]
@@ -473,7 +419,7 @@ x:"65%",
 y:"30%",
 w:"18%",
 h:"35%",
-label:"🦴 Cabinet",
+label:"🦴 Cabinet (-1 Energy)",
 type:"action",
 action:()=>{
 
@@ -598,7 +544,7 @@ x:"65%",
 y:"20%",
 w:"18%",
 h:"55%",
-label:"🔑 Bookshelf",
+label:"🔑 Bookshelf (-1 Energy)",
 type:"action",
 action:()=>{
 
@@ -682,7 +628,7 @@ x:"44%",
 y:"28%",
 w:"14%",
 h:"32%",
-label:"🕯 Candle",
+label:"🕯 Candle (-1 Energy)",
 type:"action",
 action:()=>{
 
@@ -777,12 +723,6 @@ energy = 0;
 
 updateUI();
 
-if(energy === 0){
-
-lockDay();
-
-}
-
 return true;
 
 }
@@ -791,7 +731,14 @@ return true;
 
 function doAction(text){
 
-if(energy <= 0) return;
+if(energy <= 0){
+
+textEl.innerHTML =
+"Mochi is too tired. Return to the dog house.";
+
+return;
+
+}
 
 spendEnergy();
 
@@ -799,26 +746,37 @@ textEl.innerHTML = text;
 
 }
 
-/* ================= LOCK DAY ================= */
+/* ================= SLEEP ================= */
 
-function lockDay(){
+function sleep(){
 
-clearHotspots();
-
-buttonsEl.innerHTML = "";
-
-const btn =
-document.createElement("button");
-
-btn.innerText =
-"💤 Sleep";
-
-btn.onclick = nextDay;
-
-buttonsEl.appendChild(btn);
+if(currentRoom !== "foyer"){
 
 textEl.innerHTML =
-"Mochi is too eepy.";
+"Mochi should return to the dog house in the foyer first.";
+
+return;
+
+}
+
+day++;
+
+energy = 3;
+
+foundItemToday = false;
+
+if(day > 3){
+
+ending();
+
+return;
+
+}
+
+textEl.innerHTML =
+"Mochi curls up in the dog house and sleeps peacefully.";
+
+loadRoom();
 
 }
 
@@ -865,14 +823,6 @@ rooms[currentRoom].text;
 
 buttonsEl.innerHTML = "";
 
-if(energy <= 0){
-
-lockDay();
-
-return;
-
-}
-
 rooms[currentRoom].hotspots.forEach(h=>{
 
 const div =
@@ -881,11 +831,8 @@ document.createElement("div");
 div.className = "hotspot";
 
 div.style.left = h.x;
-
 div.style.top = h.y;
-
 div.style.width = h.w;
-
 div.style.height = h.h;
 
 div.onmouseenter = ()=>{
@@ -899,11 +846,32 @@ tooltip.innerHTML =
 
 div.onmousemove = (e)=>{
 
-tooltip.style.left =
-e.pageX + 15 + "px";
+const rect =
+gameBorder.getBoundingClientRect();
 
-tooltip.style.top =
-e.pageY + 15 + "px";
+let x =
+e.clientX - rect.left + 15;
+
+let y =
+e.clientY - rect.top + 15;
+
+/* KEEP TOOLTIP INSIDE BORDER */
+
+if(x > rect.width - 260){
+
+x = rect.width - 260;
+
+}
+
+if(y > rect.height - 120){
+
+y = rect.height - 120;
+
+}
+
+tooltip.style.left = x + "px";
+
+tooltip.style.top = y + "px";
 
 };
 
@@ -921,32 +889,9 @@ roomEl.appendChild(div);
 
 }
 
-/* ================= NEXT DAY ================= */
-
-function nextDay(){
-
-day++;
-
-energy = 3;
-
-foundItemToday = false;
-
-if(day > 3){
-
-ending();
-
-return;
-
-}
-
-loadRoom();
-
-}
-
 /* ================= ENDINGS ================= */
 
 let endingLines = [];
-
 let endingIndex = 0;
 
 function startEnding(lines){
@@ -1025,15 +970,15 @@ startEnding([
 
 "💥 SECRET ENDING 💥",
 
-" The forbidden sequence is complete.",
+"You clicked outside the game.",
 
-" Reality begins buffering.",
+"The border notices you.",
 
 "Mochi slowly turns toward the player.",
 
-"'wait... im trapped inside html?'",
+"'wait... i'm trapped in html???'",
 
-"The universe immediately EXPLODES."
+"The universe immediately crashes."
 
 ]);
 
